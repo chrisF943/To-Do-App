@@ -1,1 +1,1 @@
-# To-Do-App
+A Hibernate Java app deployed on Tomcat.
