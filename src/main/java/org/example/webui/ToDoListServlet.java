@@ -7,10 +7,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 
 @WebServlet(name="org.example.webui.ToDoListServlet", value="/To-Do-List-Servlet")
@@ -41,19 +37,28 @@ public class ToDoListServlet extends HttpServlet {
     }
 
     private void insertItemIntoDatabase(String name, String description, Integer priority) {
-        String url = "jdbc:mysql://localhost:3306/Todo";
-        String username = "root";
-        String password = "";
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            // Start transaction
+            transaction = session.beginTransaction();
 
-        try (Connection conn = DriverManager.getConnection(url, username, password)) {
-            // WARNING: Vulnerable to SQL injection
-            String sql = "INSERT INTO items (title, description, priority) VALUES ('" + name + "', '" + description + "', '" + priority + "')";
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.executeUpdate();
+            // Create new TestItems object
+            TestItems testItems = new TestItems();
+            testItems.setTitle(name);
+            testItems.setDescription(description);
+            testItems.setPriority(priority != null ? priority : 0); // Set priority to 0 if null
+
+            // Save the TestItems object
+            session.persist(testItems);
+
+            // Commit transaction
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
             }
-        } catch (SQLException e) {
-            // Handle SQL exception
-            e.printStackTrace();
+            e.printStackTrace(); // Or log the exception for debugging
         }
+
     }
 }

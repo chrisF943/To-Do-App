@@ -36,7 +36,6 @@
 <form action="Delete-Servlet" method="post">
 <table border = "1" width = "100%">
     <tr>
-        <th>Item ID</th>
         <th>Item Name</th>
         <th>Item Description</th>
         <th>Item Priority</th>
@@ -45,7 +44,6 @@
 
     <c:forEach var = "row" items = "${result.rows}">
         <tr>
-            <td><c:out value = "${row.id}"/></td>
             <td><c:out value = "${row.title}"/></td>
             <td><c:out value = "${row.description}"/></td>
             <td><c:out value = "${row.priority}"/></td>
