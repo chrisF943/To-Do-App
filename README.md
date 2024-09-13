@@ -1,1 +1,1 @@
-A Hibernate Java app deployed on Tomcat.
+A Hibernate Java app deployed on Tomcat for a simple to-do list website.
